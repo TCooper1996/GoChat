@@ -1,9 +1,11 @@
-package Models
+package models
 
 import "sync/atomic"
 
 const roomLimit = 16
+
 var roomCounter uint32
+
 // Array contains every room by value
 var roomSlice []room
 
@@ -13,19 +15,19 @@ var roomMap map[string]*room
 type roomID uint8
 
 type room struct {
-	name string
-	users []userID
-	owner userID
-	ID roomID
+	name        string
+	users       []userID
+	owner       userID
+	ID          roomID
 	chatHistory messageManager
 }
 
-func InitRoom(){
+func InitRoom() {
 	roomMap = make(map[string]*room)
 	roomSlice = make([]room, 5, roomLimit)
 }
 
-func NewRoom(name string, owner userID) *room{
+func NewRoom(name string, owner userID) *room {
 	roomSlice = append(roomSlice, room{name: name, users: make([]userID, 5), owner: owner,
 		ID: roomID(roomCounter), chatHistory: *newMessageManager()})
 
@@ -35,6 +37,6 @@ func NewRoom(name string, owner userID) *room{
 	return roomMap[name]
 }
 
-func getRoom(name string) *room{
+func getRoom(name string) *room {
 	return roomMap[name]
 }

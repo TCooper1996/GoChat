@@ -1,39 +1,31 @@
-package main
+package GoChat
 
 import (
-	Views "github.com/GoChat/"
-	M "../../internal/server/Models"
+	C "GoChat/internal/pkg/controllers"
+	M "GoChat/internal/server/models"
 	"fmt"
-	"github.com/jroimartin/gocui"
-	"log"
+	"os"
 )
 
-func main(){
+var useGui = true
+
+func main() {
+	args := os.Args
+	if len(args) > 1 {
+		if args[1] == "-noGui" {
+			useGui = false
+		}
+	}
+
 	M.InitRoom()
 	M.InitUser()
 	server := M.NewUser("Server", nil)
 	M.NewRoom("Main", server.ID)
 
-
-	g, err := gocui.NewGui(gocui.OutputNormal)
-	if err != nil {
-		fmt.Printf("Handle this")
-		panic(err.Error())
+	if useGui {
+		C.InitGui()
+	} else {
+		fmt.Println("")
 	}
 
-	g.SetManager(Views.MenuManager{})
-
-	if err := g.SetKeybinding("", gocui.KeyCtrlC, gocui.ModNone, quit); err != nil{
-		log.Panicln(err)
-	}
-
-
-	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit{
-
-	}
-
-}
-
-func quit(g *gocui.Gui, v *gocui.View) error{
-	return gocui.ErrQuit
 }
